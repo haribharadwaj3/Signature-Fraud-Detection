@@ -1,0 +1,10 @@
+extracted_dataset_local/
+images/
+models_output/
+static/
+venv/
+__pycache__/
+*.pyc
+*.pyd
+*.lib
+.DS_Store

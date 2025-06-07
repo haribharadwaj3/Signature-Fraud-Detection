@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signature Verification System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0073e6;
+            --primary-dark-color: #005bb5;
+            --success-color: #28a745;
+            --success-bg-color: #e9f7ef;
+            --danger-color: #dc3545;
+            --danger-bg-color: #fdeeee;
+            --warning-color: #ffc107;
+            --warning-bg-color: #fff8e1;
+            --light-gray-color: #f1f3f5;
+            --medium-gray-color: #ced4da;
+            --dark-gray-color: #868e96;
+            --text-color: #2c3e50;
+            --text-light-color: #576574;
+            --white-color: #ffffff;
+            --border-radius-sm: 4px;
+            --border-radius-md: 8px;
+            --border-radius-lg: 12px;
+            --box-shadow-soft: 0 4px 15px rgba(0, 0, 0, 0.07);
+            --box-shadow-strong: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 30px 20px;
+            background-color: var(--light-gray-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            background-color: var(--white-color);
+            padding: 40px 50px;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow-strong);
+            width: 100%;
+            max-width: 1000px;
+            box-sizing: border-box;
+        }
+
+        header {
+            margin-bottom: 40px;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 30px;
+        }
+        header h1 {
+            text-align: center;
+            color: var(--primary-dark-color);
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            font-size: 2.4em;
+            margin-bottom: 10px;
+        }
+        header p {
+            text-align: center;
+            color: var(--text-light-color);
+            font-size: 1.1em;
+            margin-bottom: 0;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .upload-and-preview-section {
+            display: flex;
+            justify-content: space-between;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .upload-box {
+            flex: 1;
+            border: 2px dashed var(--medium-gray-color);
+            padding: 30px;
+            border-radius: var(--border-radius-md);
+            text-align: center;
+            background-color: #fcfdff;
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .upload-box:hover {
+            border-color: var(--primary-color);
+            background-color: #f8faff;
+            box-shadow: 0 4px 12px rgba(0, 115, 230, 0.1);
+        }
+        .upload-box p.image-title {
+             font-weight: 600;
+             color: var(--text-color);
+             margin-bottom: 20px;
+             margin-top: 0;
+             font-size: 1.15em;
+             font-family: 'Roboto', sans-serif;
+        }
+        .upload-box label.upload-button-style {
+            font-weight: 500;
+            color: var(--white-color);
+            background-color: var(--primary-color);
+            padding: 12px 22px;
+            border-radius: var(--border-radius-md);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .upload-box label.upload-button-style:hover {
+            background-color: var(--primary-dark-color);
+            transform: translateY(-2px);
+        }
+        .upload-box label.upload-button-style svg {
+            margin-right: 8px;
+        }
+        .upload-box input[type="file"] { display: none; }
+
+        .file-name-display {
+            font-size: 0.9em;
+            color: var(--text-light-color);
+            margin-top: 15px;
+            word-break: break-all;
+            background-color: var(--light-gray-color);
+            padding: 10px 15px;
+            border-radius: var(--border-radius-sm);
+            width: 100%;
+            box-sizing: border-box;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .client-preview-img {
+            max-width: 100%;
+            max-height: 200px;
+            width: auto;
+            height: auto;
+            margin-top: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: var(--border-radius-md);
+            object-fit: contain;
+            display: none;
+            background-color: var(--white-color);
+        }
+        .image-placeholder-client {
+            width: 100%;
+            height: 200px;
+            border: 2px dashed #e0e0e0;
+            border-radius: var(--border-radius-md);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--dark-gray-color);
+            font-size: 0.95em;
+            background-color: #f9fafb;
+            margin-top: 10px;
+        }
+        .image-placeholder-client svg {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 12px;
+            stroke: var(--dark-gray-color);
+            opacity: 0.7;
+        }
+
+        .submit-button-container { text-align: center; margin-bottom: 40px; }
+        input[type="submit"] {
+            background-image: linear-gradient(to right, var(--primary-color) 0%, var(--primary-dark-color) 100%);
+            color: white; padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer; font-size: 1.2em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(0, 115, 230, 0.25);
+            letter-spacing: 0.5px;
+            font-family: 'Roboto', sans-serif;
+        }
+        input[type="submit"]:hover {
+            background-image: linear-gradient(to right, var(--primary-dark-color) 0%, #004a99 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 91, 181, 0.3);
+        }
+        input[type="submit"]:active {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(0, 91, 181, 0.25);
+        }
+
+        /* --- Refined Result Section --- */
+        .result-section {
+            margin-top: 30px;
+            padding: 20px 25px; /* Slightly reduced padding */
+            border-radius: var(--border-radius-md);
+            text-align: left;
+            font-size: 1.05em; /* Slightly reduced base font for this section */
+            font-weight: 400;
+            white-space: pre-wrap;
+            box-shadow: var(--box-shadow-soft);
+            display: flex;
+            align-items: flex-start; /* Align tops of icon and text block */
+            gap: 15px; /* Reduced gap */
+            animation: fadeInSlideUp 0.6s ease-out forwards;
+        }
+        @keyframes fadeInSlideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-icon {
+            font-size: 2.4em; /* Slightly smaller icon, relative to new .result-section font-size */
+            line-height: 1;
+            flex-shrink: 0; /* Prevent icon from shrinking */
+            position: relative; /* For fine-tuning vertical position */
+            top: 0.1em; /* Nudge icon down slightly to align better with first text line. Adjust as needed. */
+        }
+        .result-text-content {
+            flex-grow: 1; /* Allow text content to take available space */
+        }
+        .result-text-content strong {
+            font-weight: 600;
+            font-size: 1.15em; /* Relative to .result-section's font-size */
+            display: block;
+            margin-bottom: 5px; /* Reduced margin for compactness */
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.3; /* Tighter line height for the heading itself */
+            /* Color will be inherited or set by specific .forged/.genuine classes below */
+        }
+
+        .genuine { background-color: var(--success-bg-color); color: var(--success-color); border: 1px solid #a3d9b1; }
+        .genuine .result-icon::before { content: '✅'; }
+        .genuine .result-text-content strong { color: var(--success-color); }
+
+        .forged { background-color: var(--danger-bg-color); color: var(--danger-color); border: 1px solid #f5c6cb; }
+        .forged .result-icon::before { content: '❌'; }
+        .forged .result-text-content strong { color: var(--danger-color); }
+
+        .mismatch { background-color: var(--warning-bg-color); color: #856404; border: 1px solid var(--warning-color); }
+        .mismatch .result-icon::before { content: '⚠️'; }
+        .mismatch .result-text-content strong { color: #856404; }
+        /* --- End Refined Result Section --- */
+
+        .error-message-page {
+            color: var(--danger-color); font-weight: 500; text-align: center; margin-bottom: 30px;
+            padding: 18px 20px; background-color: var(--danger-bg-color); border: 1px solid #f5c6cb;
+            border-radius: var(--border-radius-md);
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .error-message-page::before {
+            content: '⚠️';
+            font-size: 1.5em;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 25px 20px; }
+            header h1 { font-size: 2em; }
+            header p { font-size: 1em; }
+            .upload-and-preview-section { flex-direction: column; gap: 30px; }
+            .upload-box { padding: 20px; }
+            .result-section {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+                padding: 20px;
+                align-items: center; /* Center items when stacked */
+            }
+            .result-icon {
+                top: 0; /* Reset nudge for stacked layout */
+            }
+            input[type="submit"] { font-size: 1.1em; padding: 12px 30px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Signature Verification System</h1>
+            <p>Intelligent analysis to verify the authenticity of handwritten signatures.</p>
+        </header>
+
+        {% if error_message_page %}
+            <p class="error-message-page">{{ error_message_page }}</p>
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data" id="signatureForm">
+            <div class="upload-and-preview-section">
+                <div class="upload-box">
+                    <p class="image-title">Reference Signature (Image 1)</p>
+                    <label for="image1" class="upload-button-style">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                        Choose Reference File
+                    </label>
+                    <input type="file" name="image1" id="image1" accept="image/*" required onchange="previewClientImage(this, 'clientPreviewImg1', 'clientPlaceholder1', 'fileName1')">
+                    
+                    <div class="image-placeholder-client" id="clientPlaceholder1" style="display: {{ 'none' if image1_data_url else 'flex' }};">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                        <span>Image Preview</span>
+                    </div>
+                    <img class="client-preview-img" id="clientPreviewImg1" src="{{ image1_data_url | default('#') }}" alt="Reference Signature Preview" style="display: {{ 'block' if image1_data_url else 'none' }};">
+                    <span class="file-name-display" id="fileName1">{{ image1_filename | default('No file chosen') }}</span>
+                </div>
+
+                <div class="upload-box">
+                    <p class="image-title">Test Signature (Image 2)</p>
+                    <label for="image2" class="upload-button-style">
+                         <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                        Choose Test File
+                    </label>
+                    <input type="file" name="image2" id="image2" accept="image/*" required onchange="previewClientImage(this, 'clientPreviewImg2', 'clientPlaceholder2', 'fileName2')">
+                    
+                    <div class="image-placeholder-client" id="clientPlaceholder2" style="display: {{ 'none' if image2_data_url else 'flex' }};">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                        <span>Image Preview</span>
+                    </div>
+                    <img class="client-preview-img" id="clientPreviewImg2" src="{{ image2_data_url | default('#') }}" alt="Test Signature Preview" style="display: {{ 'block' if image2_data_url else 'none' }};">
+                    <span class="file-name-display" id="fileName2">{{ image2_filename | default('No file chosen') }}</span>
+                </div>
+            </div>
+            <div class="submit-button-container">
+                <input type="submit" value="Verify Signatures">
+            </div>
+        </form>
+
+        {% if result_class and result_message_text %}
+            <div class="result-section {{ result_class }}">
+                <div class="result-icon"></div> <!-- Icon will be added by CSS -->
+                <div class="result-text-content">
+                    <strong>Verification Result:</strong>
+                    {{ result_message_text }}
+                </div>
+            </div>
+        {% endif %}
+
+    </div>
+
+    <script>
+        function previewClientImage(inputElement, imgId, placeholderId, fileNameId) {
+            const file = inputElement.files[0];
+            const previewImg = document.getElementById(imgId);
+            const placeholder = document.getElementById(placeholderId);
+            const fileNameDisplay = document.getElementById(fileNameId);
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    previewImg.style.display = 'block';
+                    if (placeholder) placeholder.style.display = 'none';
+                }
+                reader.readAsDataURL(file);
+                if (fileNameDisplay) fileNameDisplay.textContent = file.name;
+            } else {
+                previewImg.src = '#';
+                previewImg.style.display = 'none';
+                if (placeholder) placeholder.style.display = 'flex';
+                if (fileNameDisplay) fileNameDisplay.textContent = 'No file chosen';
+            }
+        }
+    </script>
+</body>
+</html>
